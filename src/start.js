@@ -28,6 +28,11 @@ export const start = async () => {
         comment(_id: String): Comment
       }
 
+      type Mutation {
+        createPost(title: String, content: String): Post
+        createComment(postId: String, content: String): Comment
+      }
+
       type Post {
         _id: String
         title: String
@@ -40,11 +45,6 @@ export const start = async () => {
         postId: String
         content: String
         post: Post
-      }
-
-      type Mutation {
-        createPost(title: String, content: String): Post
-        createComment(postId: String, content: String): Comment
       }
 
       schema {
@@ -77,12 +77,12 @@ export const start = async () => {
       },
       Mutation: {
         createPost: async (root, args, context, info) => {
-          const res = await Posts.insert(args)
-          return prepare(await Posts.findOne({_id: res.insertedIds[1]}))
+          const res = await Posts.insertOne(args)
+          return prepare(await Posts.findOne({_id: res.insertedId}))
         },
         createComment: async (root, args) => {
-          const res = await Comments.insert(args)
-          return prepare(await Comments.findOne({_id: res.insertedIds[1]}))
+          const res = await Comments.insertOne(args)
+          return prepare(await Comments.findOne({_id: res.insertedId}))
         },
       },
     }
